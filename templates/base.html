@@ -1,0 +1,13 @@
+<html>
+  <body>
+   <h1>Catalog html</h1>
+   {% for c in categories%}
+      <a href="/catalog/{{c.id}}">{{ c.name }}</a>
+      <br>
+    {% endfor %}
+    
+  {% block content %}
+  {% endblock %}
+
+  </body>
+</html>
