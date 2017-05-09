@@ -1,52 +1,72 @@
 from flask import Flask, render_template, request, redirect, jsonify, url_for
-from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
-import cgi
+
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from database_setup import Base, Category, Item
 
 app = Flask(__name__)
 
-#Fake categories
-category = {'name': 'Catagory', 'id': '0'}
+engine = create_engine('sqlite:///catalog.db')
+Base.metadata.bind = engine
 
-categories = [{'name': 'Catagory1', 'id': '1'},
-            {'name': 'Catagory2', 'id': '2'},
-            {'name': 'Catagory3', 'id': '3'},
-            {'name': 'Catagory4', 'id': '4'},
-            {'name': 'Catagory5', 'id': '5'}]
-
-items = [{'name': 'item1', 'id': '1', 'c_id': 1},
-        {'name': 'item2', 'id': '2', 'c_id': 2},
-        {'name': 'item3', 'id': '3', 'c_id': 1},
-        {'name': 'item4', 'id': '4', 'c_id': 2},
-        {'name': 'item5', 'id': '5', 'c_id': 1},
-        {'name': 'item6', 'id': '6', 'c_id': 3}]
-
-item = [{'name': 'item', 'id': '0', 'description': 'Some description'}]
+DBSession = sessionmaker(bind=engine)
+session = DBSession()
 
 @app.route('/')
 @app.route('/catalog')
 def homepage():
+    categories = session.query(Category).all()
     return render_template('index.html', categories = categories)
 
 @app.route('/catalog/<int:category_id>')
-def category(category_id):
-
-    return render_template('category.html', categories = categories, category_id = category_id, items = items)
+def categoryList(category_id):
+    category = session.query(Category).filter_by(id=category_id).one()
+    items = session.query(Item).filter_by(category_id=category.id)
+    return render_template('category.html', category = category, category_id = category_id, items = items)
 
 @app.route('/catalog/<int:category_id>/<int:item_id>')
-def item(category_id, item_id):
-    return render_template('item.html', catagories = categories, category_id = category_id, item_id = item_id, item = item)
+def itemDescription(category_id, item_id):
+    item = session.query(Item).filter_by(id=item_id).one()
+    return render_template('item.html',  category_id = category_id, item_id = item_id, item = item)
 
-@app.route('/catalog/new')
-def newItem():
-    return render_template('new_item.html')
+@app.route('/catalog/<int:category_id>/new', methods=['GET', 'POST'])
+def newItem(category_id):
+    category = session.query(Category).filter_by(id=category_id).one()
+    items = session.query(Item).filter_by(category_id=category.id)
+    print request.method
+    if request.method == 'POST':
+        newItem = Item(
+            name=request.form['name'], description=request.form[
+                           'description'], category_id=category_id)
+        session.add(newItem)
+        session.commit()
+        return redirect(url_for('categoryList', category_id = category_id))
+    else:
+        return render_template('new_item.html', category_id = category_id)
 
-@app.route('/catalog/<int:category_id>/<int:item_id>/edit')
+@app.route('/catalog/<int:category_id>/<int:item_id>/edit', methods=['GET', 'POST'])
 def editItem(category_id, item_id):
-    return render_template('edit.html', catagories = categories, category_id = category_id, item_id = item_id)
+    editedItem = session.query(Item).filter_by(id=item_id).one()
+    if request.method == 'POST':
+        if request.form['name']:
+            editedItem.name = request.form['name']
+        if request.form['description']:
+            editedItem.description = request.form['description']
+        session.add(editedItem)
+        session.commit()
+        return redirect(url_for('itemDescription', category_id = category_id, item_id = item_id))
+    else:
+        return render_template('edit.html', category_id = category_id, item_id = item_id, item = editedItem)
 
-@app.route('/catalog/<int:category_id>/<int:item_id>/delete')
+@app.route('/catalog/<int:category_id>/<int:item_id>/delete', methods=['GET', 'POST'])
 def deleteItem(category_id, item_id):
-    return render_template('delete.html', catagories = categories, category_id = category_id, item_id = item_id)
+    deleteItem = session.query(Item).filter_by(id=item_id).one()
+    if request.method == 'POST':
+        session.delete(deleteItem)
+        session.commit()
+        return redirect(url_for('categoryList', category_id = category_id))
+    else:
+        return render_template('delete.html', category_id = category_id, item_id = item_id)
 
 
 if __name__ == '__main__':

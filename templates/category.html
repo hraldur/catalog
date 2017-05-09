@@ -1,13 +1,10 @@
 {% extends "base.html" %}
 {% block content %}
-    <h2>Category {{category_id}}</h2>
+    <h2>Category {{category_id}} {{category.name}}</h2>
     {% for i in items %}
 
-      {% if i.c_id == category_id %}
-
-        <a href="/catalog/{{category_id}}/{{i.id}}">{{ i.name }}</a>
+        <a href="/catalog/{{category_id}}/{{i.id}}">{{ i.name}} - {{i.category_id}}</a>
         <br>
-      {% endif %}
      {% endfor %}
-
+<a href="/catalog/{{category_id}}/new">Add new item</a>
 {% endblock %}

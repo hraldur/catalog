@@ -1,17 +1,21 @@
 {% extends "base.html" %}
 {% block content %}
-    <h2>Add New Item</h2>
-    <from>
-      <input type="text" placeholder="new item"/>
-      <br />
-      <textarea placeholder="description"></textarea>
-      <select>
-        <option value="1">Category1</option>
-        <option value="2">Category2</option>
-        <option value="3">Category3</option>
-      </select>
-      <input type="submit" />
-    </from>
+
+<h1>New  Item</h1>
+
+<div>
+<form action="{{ url_for('newItem', category_id=category_id )}}" method = 'post'>
+
+<dl>
+	<dt>Name:</dt>
+		<dd><input type ='text' size='30' name='name' required></dd>
+            <dt>Description:</dt>
+                        <dd><textarea name = 'description' rows='5' cols='40' required></textarea></dd>
+</dl>
 
 
+<input type='submit' value='Create'>
+
+</form>
+</div>
 {% endblock %}

@@ -2,10 +2,10 @@
   <body>
    <h1>Catalog html</h1>
    {% for c in categories%}
-      <a href="/catalog/{{c.id}}">{{ c.name }}</a>
+      <a href="/catalog/{{c.id}}">{{ c.name }} - {{c.id}}</a>
       <br>
     {% endfor %}
-    
+
   {% block content %}
   {% endblock %}
 
