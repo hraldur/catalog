@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, jsonify, url_for
+from flask import Flask, render_template, request, redirect, jsonify, url_for, flash
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -40,6 +40,7 @@ def newItem(category_id):
                            'description'], category_id=category_id)
         session.add(newItem)
         session.commit()
+        flash("new item created.")
         return redirect(url_for('categoryList', category_id = category_id))
     else:
         return render_template('new_item.html', category_id = category_id)
@@ -54,6 +55,7 @@ def editItem(category_id, item_id):
             editedItem.description = request.form['description']
         session.add(editedItem)
         session.commit()
+        flash("Item edited.")
         return redirect(url_for('itemDescription', category_id = category_id, item_id = item_id))
     else:
         return render_template('edit.html', category_id = category_id, item_id = item_id, item = editedItem)
@@ -64,6 +66,7 @@ def deleteItem(category_id, item_id):
     if request.method == 'POST':
         session.delete(deleteItem)
         session.commit()
+        flash("Item deleted.")
         return redirect(url_for('categoryList', category_id = category_id))
     else:
         return render_template('delete.html', category_id = category_id, item_id = item_id)
@@ -81,5 +84,6 @@ def itemJSON(category_id, item_id):
     return jsonify(Item=item.serialize)
 
 if __name__ == '__main__':
+    app.secret_key = 'super_secret_key'
     app.debug = True
     app.run(host='0.0.0.0', port=5000)

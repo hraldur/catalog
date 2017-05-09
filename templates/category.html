@@ -1,9 +1,18 @@
 {% extends "base.html" %}
 {% block content %}
     <h2>Category {{category_id}} {{category.name}}</h2>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+        {% for m in messages %}
+          {{ m }}
+      <br>
+        {% endfor %}
+      {% endif %}
+      {% endwith %}
+
     {% for i in items %}
 
-        <a href="/catalog/{{category_id}}/{{i.id}}">{{ i.name}} - {{i.category_id}}</a>
+        <a href="/catalog/{{category_id}}/{{i.id}}">{{ i.name}}</a>
         <br>
      {% endfor %}
 <a href="/catalog/{{category_id}}/new">Add new item</a>
