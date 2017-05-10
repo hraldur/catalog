@@ -4,7 +4,7 @@ from flask import Flask, render_template, request, redirect, jsonify, url_for, f
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, Category, Item
-
+from flask import session as login_session
 
 from catalog import app
 
@@ -34,6 +34,8 @@ def itemDescription(category_id, item_id):
 
 @app.route('/catalog/<int:category_id>/new', methods=['GET', 'POST'])
 def newItem(category_id):
+    if 'username' not in login_session:
+        return redirect('login')
     category = session.query(Category).filter_by(id=category_id).one()
     items = session.query(Item).filter_by(category_id=category.id)
     print request.method
@@ -50,6 +52,8 @@ def newItem(category_id):
 
 @app.route('/catalog/<int:category_id>/<int:item_id>/edit', methods=['GET', 'POST'])
 def editItem(category_id, item_id):
+    if 'username' not in login_session:
+        return redirect('login')
     editedItem = session.query(Item).filter_by(id=item_id).one()
     if request.method == 'POST':
         if request.form['name']:
@@ -65,6 +69,8 @@ def editItem(category_id, item_id):
 
 @app.route('/catalog/<int:category_id>/<int:item_id>/delete', methods=['GET', 'POST'])
 def deleteItem(category_id, item_id):
+    if 'username' not in login_session:
+        return redirect('login')
     deleteItem = session.query(Item).filter_by(id=item_id).one()
     if request.method == 'POST':
         session.delete(deleteItem)
@@ -80,6 +86,7 @@ def categoryJSON(category_id):
     items = session.query(Item).filter_by(
         category_id=category_id).all()
     return jsonify(Items=[i.serialize for i in items])
+
 
 @app.route('/catalog/<int:category_id>/<int:item_id>/JSON')
 def itemJSON(category_id, item_id):
