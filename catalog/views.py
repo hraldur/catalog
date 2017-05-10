@@ -6,7 +6,6 @@ from sqlalchemy.orm import sessionmaker
 from database_setup import Base, Category, Item
 
 
-
 from catalog import app
 
 engine = create_engine('sqlite:///catalog.db')
