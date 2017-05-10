@@ -41,7 +41,6 @@ class Item(Base):
             'description': self.description,
         }
 
-#test
 engine = create_engine('sqlite:///catalog.db')
 
 
