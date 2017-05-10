@@ -41,6 +41,7 @@ class Item(Base):
             'description': self.description,
         }
 
+        #vomment
 engine = create_engine('sqlite:///catalog.db')
 
 
