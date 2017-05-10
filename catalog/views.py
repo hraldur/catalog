@@ -1,16 +1,19 @@
+
 from flask import Flask, render_template, request, redirect, jsonify, url_for, flash
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, Category, Item
 
-app = Flask(__name__)
+
+from catalog import app
 
 engine = create_engine('sqlite:///catalog.db')
 Base.metadata.bind = engine
 
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
+
 
 @app.route('/')
 @app.route('/catalog')
@@ -82,8 +85,3 @@ def categoryJSON(category_id):
 def itemJSON(category_id, item_id):
     item = session.query(Item).filter_by(id=item_id).one()
     return jsonify(Item=item.serialize)
-
-if __name__ == '__main__':
-    app.secret_key = 'super_secret_key'
-    app.debug = True
-    app.run(host='0.0.0.0', port=5000)
