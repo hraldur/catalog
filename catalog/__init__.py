@@ -3,3 +3,4 @@ app = Flask(__name__)
 
 import views
 import login
+import logout

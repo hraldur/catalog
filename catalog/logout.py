@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, jsonify, url_for, flash
-from flask import session as login_sessio
+from flask import session as login_session
 import random, string
 
 from oauth2client.client import flow_from_clientsecrets
@@ -16,10 +16,10 @@ from catalog import app
 
 @app.route('/gdisconnect')
 def gdisconnect():
-    access_token = session['access_token']
+    access_token = login_session['access_token']
     print 'In gdisconnect access token is %s', access_token
     print 'User name is: '
-    print session['username']
+    print login_session['username']
     if access_token is None:
  	print 'Access Token is None'
     	response = make_response(json.dumps('Current user not connected.'), 401)
@@ -31,11 +31,11 @@ def gdisconnect():
     print 'result is '
     print result
     if result['status'] == '200':
-	del session['access_token']
-    	del session['gplus_id']
-    	del session['username']
-    	del session['email']
-    	del session['picture']
+        del login_session['access_token']
+    	del login_session['gplus_id']
+    	del login_session['username']
+    	del login_session['email']
+    	del login_session['picture']
     	response = make_response(json.dumps('Successfully disconnected.'), 200)
     	response.headers['Content-Type'] = 'application/json'
     	return response
