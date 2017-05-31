@@ -18,7 +18,11 @@ session = DBSession()
 @app.route('/')
 @app.route('/catalog')
 def homepage():
+    '''
+    Main page view
+    '''
     categories = session.query(Category).all()
+    # Check if user is logged in
     if 'username' not in login_session:
         return render_template('base.html', categories = categories)
     else:
@@ -26,9 +30,13 @@ def homepage():
 
 @app.route('/catalog/<int:category_id>')
 def categoryList(category_id):
+    '''
+    returns list of items with catagory_id
+    '''
     categories = session.query(Category).all()
     category = session.query(Category).filter_by(id=category_id).one()
     items = session.query(Item).filter_by(category_id=category.id)
+    # Check if user is logged in
     if 'username' not in login_session:
         return render_template('category-public.html', category = category, category_id = category_id, items = items, categories = categories)
     else:
@@ -36,7 +44,11 @@ def categoryList(category_id):
 
 @app.route('/catalog/new', methods=['GET', 'POST'])
 def newCategory():
+    '''
+    Creates new category
+    '''
     categories = session.query(Category).all()
+    # Check if user is logged in
     if 'username' not in login_session:
         return redirect('login')
     category = session.query(Category)
@@ -55,7 +67,11 @@ def newCategory():
 
 @app.route('/catalog/<int:category_id>/delete', methods=['GET', 'POST'])
 def deleteCategory(category_id):
+    '''
+    Delete Category
+    '''
     categories = session.query(Category).all()
+    # Check if user is logged in
     if 'username' not in login_session:
         return redirect('/login')
     deleteCategory = session.query(Category).filter_by(id=category_id).one()
@@ -71,12 +87,16 @@ def deleteCategory(category_id):
 
 @app.route('/catalog/<int:category_id>/<int:item_id>')
 def itemDescription(category_id, item_id):
+    '''
+    returns description of item
+    '''
     categories = session.query(Category).all()
     category = session.query(Category).filter_by(id=category_id).one()
     items = session.query(Item).filter_by(category_id=category.id)
     item = session.query(Item).filter_by(id=item_id).one()
     creator = session.query(User).filter_by(id=item.user_id).one()
     creator = creator.name
+    # Check if user is logged in
     if 'username' not in login_session:
         return render_template('item-public.html',  category_id = category_id, item_id = item_id, item = item, creator = creator, categories = categories, items = items, category = category)
     else:
@@ -84,7 +104,11 @@ def itemDescription(category_id, item_id):
 
 @app.route('/catalog/<int:category_id>/new', methods=['GET', 'POST'])
 def newItem(category_id):
+    '''
+    Creates new item
+    '''
     categories = session.query(Category).all()
+    # Check if user is logged in
     if 'username' not in login_session:
         return redirect('login')
     category = session.query(Category).filter_by(id=category_id).one()
@@ -104,8 +128,12 @@ def newItem(category_id):
 
 @app.route('/catalog/<int:category_id>/<int:item_id>/edit', methods=['GET', 'POST'])
 def editItem(category_id, item_id):
+    '''
+    Edit Item
+    '''
     categories = session.query(Category).all()
     editedItem = session.query(Item).filter_by(id=item_id).one()
+    # Check if user is logged in
     if 'username' not in login_session:
         return redirect('/login')
     if editedItem.user_id != login_session['user_id']:
@@ -124,7 +152,11 @@ def editItem(category_id, item_id):
 
 @app.route('/catalog/<int:category_id>/<int:item_id>/delete', methods=['GET', 'POST'])
 def deleteItem(category_id, item_id):
+    '''
+    Deletes Item
+    '''
     categories = session.query(Category).all()
+    # Check if user is logged in
     if 'username' not in login_session:
         return redirect('/login')
     deleteItem = session.query(Item).filter_by(id=item_id).one()
@@ -138,8 +170,12 @@ def deleteItem(category_id, item_id):
     else:
         return render_template('delete.html', category_id = category_id, item_id = item_id, categories = categories)
 
+
 @app.route('/catalog/<int:category_id>/JSON')
 def categoryJSON(category_id):
+    '''
+    Creates JSON data fot category page
+    '''
     category = session.query(Category).filter_by(id=category_id).one()
     items = session.query(Item).filter_by(
         category_id=category_id).all()
@@ -148,5 +184,8 @@ def categoryJSON(category_id):
 
 @app.route('/catalog/<int:category_id>/<int:item_id>/JSON')
 def itemJSON(category_id, item_id):
+    '''
+    Creates JSON data for item page
+    '''
     item = session.query(Item).filter_by(id=item_id).one()
     return jsonify(Item=item.serialize)
