@@ -1,15 +1,28 @@
 {% extends "base.html" %}
 {% block content %}
 
-  <h2>{{item.name}}</h2>
-  <p>
+   <div class="content">
+     <section class="row">
+       <div class="col-md-2 left-margin">
+         <h3>{{category.name}}</h3>
+         {% for i in items %}
+             <a href="/catalog/{{category_id}}/{{i.id}}">{{ i.name}}</a>
+             <br>
+          {% endfor %}
+        
+       </div>
 
-      Description: {{item.description}}<br />
-      Creator: {{creator}}
-  </p>
-  {% for i in items %}
-      <a href="/catalog/{{category_id}}/{{i.id}}">{{ i.name}}</a>
-      <br>
-   {% endfor %}
+       <div class="col-md-10 right-margin">
 
+           <h2>{{item.name}}</h2>
+           <p>
+
+               Description: {{item.description}}<br /><br />
+               Creator: {{creator.name}}
+           </p>
+
+       <br><br>
+       </div>
+     </section>
+   </div>
 {% endblock %}

@@ -16,5 +16,7 @@
         <br>
      {% endfor %}
      <br />
-
+     {% if creator %}
+      <a href="/catalog/{{category_id}}/new">Add new item</a>
+      {% endif %}
 {% endblock %}
