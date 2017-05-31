@@ -1,0 +1,28 @@
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand">Item Catalog</a>
+    </div>
+    <ul class="nav navbar-nav">
+      <li><a href="/">Home</a></li>
+      <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Categories <span class="caret"></span></a>
+      <ul class="dropdown-menu">
+        <li>
+          {% for c in categories%}
+             <li><a href="/catalog/{{c.id}}">{{ c.name }}</a></li>
+           {% endfor %}
+           {% if username %}
+           <li class="line">
+             <a href="/catalog/new">Add New Category</a>
+           </li>
+           {% endif %}
+        </li>
+      </ul>
+      {% if username %}
+        <li class="login-btn"><a href="/logout">Logout</a></li>
+      {% else %}
+        <li class="login-btn"><a href="/login">Login</a></li>
+      {% endif %}
+    </ul>
+  </div>
+</nav>

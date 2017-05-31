@@ -1,23 +1,36 @@
 {% extends "base.html" %}
 {% block content %}
-{% with messages = get_flashed_messages() %}
-{% if messages %}
-    {% for m in messages %}
-      {{ m }}
-  <br>
-    {% endfor %}
-  {% endif %}
-  {% endwith %}
-  <h2>item name: {{item.name}}</h2>
-  <p>
 
-      Description: {{item.description}}
-      <br />
-      Creator: {{creator}}
+<div class="content">
+  <section class="row">
+    <div class="col-md-2 left-margin">
+      <h3>{{category.name}}</h3>
+      {% for i in items %}
+          <a href="/catalog/{{category_id}}/{{i.id}}">{{ i.name}}</a>
+          <br>
+       {% endfor %}
+       <br>
+       <a href="/catalog/{{category_id}}/new">Add new item</a>
 
-  </p>
-  <a href="/catalog/{{category_id}}/{{item_id}}/edit">Edit</a>
-  <a href="/catalog/{{category_id}}/{{item_id}}/delete">Delete</a>
+    </div>
+
+    <div class="col-md-10 right-margin">
+      <h2>{{item.name}}</h2>
+      <p>
+
+          Description: {{item.description}}
+          <br />
+          Creator: {{creator}}
+
+      </p>
+      <a href="/catalog/{{category_id}}/{{item_id}}/edit">Edit</a>
+      <a href="/catalog/{{category_id}}/{{item_id}}/delete">Delete</a>
+    <br><br>
+    </div>
+  </section>
+</div>
+
+
 
 
 {% endblock %}

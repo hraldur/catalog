@@ -1,13 +1,29 @@
 <html>
-  <body>
-   <h1>Catalog html</h1>
-   {% for c in categories%}
-      <a href="/catalog/{{c.id}}">{{ c.name }} - {{c.id}}</a>
-      <br>
-    {% endfor %}
+  <head>
+    <!---Style--->
+    <link type="text/css" rel="stylesheet" href="/static/bootstrap/css/bootstrap.min.css" />
+    <link type="text/css" rel="stylesheet" href="/static/bootstrap/css/style.css" />
 
-  {% block content %}
-  {% endblock %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  </head>
+  <body>
+
+
+{% include 'nav.html' %}
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+    {% for m in messages %}
+      {{ m }}
+  <br>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+    {% block content %}
+    {% endblock %}
+
 
   </body>
 </html>

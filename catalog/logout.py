@@ -13,6 +13,17 @@ from catalog import app
 
     # DISCONNECT - Revoke a current user's token and reset their session
 
+@app.route('/logout')
+def logout():
+    provider = login_session.get('provider')
+    if not provider:
+        print "no provider!!!"
+        return redirect(url_for('homepage'))
+    if provider == 'google':
+        return redirect(url_for('gdisconnect'))
+    elif provider == 'facebook':
+        return redirect(url_for('fbdisconnect'))
+
 
 @app.route('/gdisconnect')
 def gdisconnect():
@@ -38,7 +49,8 @@ def gdisconnect():
     	del login_session['picture']
     	response = make_response(json.dumps('Successfully disconnected.'), 200)
     	response.headers['Content-Type'] = 'application/json'
-    	return response
+        flash("Successfully disconnected")
+    	return redirect(url_for('homepage'))
     else:
 
     	response = make_response(json.dumps('Failed to revoke token for given user.', 400))

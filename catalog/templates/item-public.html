@@ -1,19 +1,15 @@
 {% extends "base.html" %}
 {% block content %}
-{% with messages = get_flashed_messages() %}
-{% if messages %}
-    {% for m in messages %}
-      {{ m }}
-  <br>
-    {% endfor %}
-  {% endif %}
-  {% endwith %}
-  <h2>item name: {{item.name}}</h2>
+
+  <h2>{{item.name}}</h2>
   <p>
 
       Description: {{item.description}}<br />
       Creator: {{creator}}
   </p>
-
+  {% for i in items %}
+      <a href="/catalog/{{category_id}}/{{i.id}}">{{ i.name}}</a>
+      <br>
+   {% endfor %}
 
 {% endblock %}
