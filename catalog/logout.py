@@ -71,4 +71,5 @@ def fbdisconnect():
     del login_session['email']
     del login_session['picture']
     del login_session['facebook_id']
-    return "you have been logged out"
+    flash("you have been logged out")
+    return redirect(url_for('homepage'))
